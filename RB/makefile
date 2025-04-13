@@ -14,4 +14,4 @@ main.o: main.c rb.h
 	$(CC) -c $(CFLAGS) main.c
 
 clean:
-	rm -f *.o *~ main
+	rm -f *.o *~ myrb

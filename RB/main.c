@@ -1,7 +1,8 @@
-#include "rb.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "rb.h"
 
 int main() {
     char instruction;
@@ -29,6 +30,8 @@ int main() {
     }
 
     print_tree(tree, tree->root, 0);
+
+    delete_tree(tree);
 
     return 0;
 }

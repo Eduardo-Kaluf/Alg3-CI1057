@@ -1,19 +1,32 @@
 #include "rb.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 int main() {
+    char instruction;
+    int key;
 
-    struct root_t *tree = create_rb(4);
+    struct root_t *tree = NULL;
 
-    rb_insert(tree, 12);
-    rb_insert(tree, 18);
-    rb_insert(tree, 1);
-    rb_insert(tree, 2);
-    rb_insert(tree, 7);
-    rb_insert(tree, 3);
-    rb_insert(tree, 5);
+    while (scanf("%c", &instruction) != EOF) {
+        if (instruction == 'i') {
+            scanf("%d", &key);
+
+            if (tree == NULL)
+                tree = create_rb(key);
+            else
+                rb_insert(tree, create_node(tree, tree->nil, key));
+        }
+        else if (instruction == 'r') {
+            scanf("%d", &key);
+
+            if (tree != NULL)
+                rb_delete(tree, rb_search(tree, tree->root, key));
+        }
+
+        getchar();
+    }
 
     print_tree(tree, tree->root, 0);
 

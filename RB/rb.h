@@ -24,10 +24,22 @@ void left_rotate(struct root_t *tree, struct node_t *target);
 
 struct node_t *bst_insert(struct root_t *tree, struct node_t *node, struct node_t *parent_node, int k);
 
-void rb_insert(struct root_t *tree, int k);
+void rb_insert(struct root_t *tree, struct node_t *new);
+
+void rb_insert_fixup(struct root_t *tree, struct node_t *new);
 
 void postorder(struct node_t* p, int indent);
 
 void print_tree(struct root_t *tree, struct node_t *node, int counter);
+
+struct node_t *find_min(struct root_t *tree, struct node_t *node);
+
+void rb_transplant(struct root_t *tree, struct node_t *removing, struct node_t *new_sub_root);
+
+void rb_delete_fixup(struct root_t *tree, struct node_t *removing);
+
+void rb_delete(struct root_t *tree, struct node_t *removing);
+
+struct node_t *rb_search(struct root_t *tree, struct node_t *node, int key);
 
 #endif

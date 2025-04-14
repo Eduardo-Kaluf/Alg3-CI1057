@@ -4,20 +4,23 @@
 
 #include "rb.h"
 
+#define PRETO 0
+#define VERMELHO 1
+
 struct root_t *create_rb(int k) {
     struct root_t *tree = malloc(sizeof(struct root_t));
     struct node_t *root = malloc(sizeof(struct node_t));
     struct node_t *nil = malloc(sizeof(struct node_t));
 
     root->key = k;
-    root->color = 0;
+    root->color = PRETO;
     root->left = nil;
     root->right = nil;
     root->parent = nil;
 
     tree->root = root;
 
-    nil->color = 0;
+    nil->color = PRETO;
     nil->left = nil;
     nil->right = nil;
     nil->parent = nil;
@@ -27,11 +30,14 @@ struct root_t *create_rb(int k) {
     return tree;
 }
 
-struct node_t *create_node(struct root_t *tree, struct node_t *parent_node, int k) {
+struct node_t *create_rb_node(struct root_t *tree, struct node_t *parent_node, int k) {
+    if (tree == NULL)
+        return NULL;
+    
     struct node_t *node = malloc(sizeof(struct node_t));
 
     node->key = k;
-    node->color = 1;
+    node->color = VERMELHO;
     node->left = tree->nil;
     node->right = tree->nil;
     node->parent = parent_node;
@@ -40,6 +46,9 @@ struct node_t *create_node(struct root_t *tree, struct node_t *parent_node, int 
 }
 
 struct node_t *rb_search(struct root_t *tree, struct node_t *node, int key) {
+    if (tree == NULL)
+        return NULL;
+    
     if (node == tree->nil || key == node->key)
         return node;
     if (key < node->key)
@@ -48,7 +57,7 @@ struct node_t *rb_search(struct root_t *tree, struct node_t *node, int key) {
         return rb_search(tree, node->right, key);
 }
 
-void left_rotate(struct root_t *tree, struct node_t *target) {
+void rb_left_rotation(struct root_t *tree, struct node_t *target) {
     struct node_t *aux = target->right;
     
     target->right = aux->left;
@@ -69,7 +78,7 @@ void left_rotate(struct root_t *tree, struct node_t *target) {
     target->parent = aux;
 }
 
-void right_rotate(struct root_t *tree, struct node_t *target) {
+void rb_right_rotation(struct root_t *tree, struct node_t *target) {
     struct node_t *aux = target->left;
     
     target->left = aux->right;
@@ -91,6 +100,9 @@ void right_rotate(struct root_t *tree, struct node_t *target) {
 }
 
 void rb_insert(struct root_t *tree, struct node_t *new) {
+    if (tree == NULL)
+        return;
+    
     struct node_t *aux = tree->nil;
     struct node_t *target = tree->root;
 
@@ -114,66 +126,68 @@ void rb_insert(struct root_t *tree, struct node_t *new) {
     
     new->left = tree->nil;
     new->right = tree->nil;
-    new->color = 1;
+    new->color = VERMELHO;
 
     rb_insert_fixup(tree, new);
 }
 
 void rb_insert_fixup(struct root_t *tree, struct node_t *new) {
-    while (new->parent->color == 1) {
+    while (new->parent->color == VERMELHO) {
         if (new->parent == new->parent->parent->left) {
             struct node_t *aux = new->parent->parent->right;
             
-            if (aux->color == 1) {
-                new->parent->color = 0;
-                aux->color = 0;
-                new->parent->parent->color = 1;
+            if (aux->color == VERMELHO) {
+                new->parent->color = PRETO;
+                aux->color = PRETO;
+                new->parent->parent->color = VERMELHO;
                 new = new->parent->parent;
             } 
             else {
                 if (new == new->parent->right) {
                     new = new->parent;
-                    left_rotate(tree, new);
+                    rb_left_rotation(tree, new);
                 }
 
-                new->parent->color = 0;
-                new->parent->parent->color = 1;
-                right_rotate(tree, new->parent->parent);
+                new->parent->color = PRETO;
+                new->parent->parent->color = VERMELHO;
+                rb_right_rotation(tree, new->parent->parent);
             }
         } 
         else {
             struct node_t *aux = new->parent->parent->left;
             
-            if (aux->color == 1) {
-                new->parent->color = 0;
-                aux->color = 0;
-                new->parent->parent->color = 1;
+            if (aux->color == VERMELHO) {
+                new->parent->color = PRETO;
+                aux->color = PRETO;
+                new->parent->parent->color = VERMELHO;
                 new = new->parent->parent;
             } 
             else {
                 if (new == new->parent->left) {
                     new = new->parent;
-                    right_rotate(tree, new);
+                    rb_right_rotation(tree, new);
                 }
 
-                new->parent->color = 0;
-                new->parent->parent->color = 1;
-                left_rotate(tree, new->parent->parent);
+                new->parent->color = PRETO;
+                new->parent->parent->color = VERMELHO;
+                rb_left_rotation(tree, new->parent->parent);
             }
         }
     }
 
-    tree->root->color = 0;
+    tree->root->color = PRETO;
 }
 
-void print_tree(struct root_t *tree, struct node_t *node, int counter) {
+void rb_print(struct root_t *tree, struct node_t *node, int counter) {
+    if (tree == NULL)
+        return;
 
     if (node == tree->nil)
         return;
 
-    print_tree(tree, node->left, counter + 1);
+    rb_print(tree, node->left, counter + 1);
     printf("%d,%d,%d\n", node->key, counter, node->color);
-    print_tree(tree, node->right, counter + 1);
+    rb_print(tree, node->right, counter + 1);
 }
 
 struct node_t *find_max(struct root_t *tree, struct node_t *node) {
@@ -195,9 +209,15 @@ void rb_transplant(struct root_t *tree, struct node_t *removing, struct node_t *
 }
 
 void rb_delete(struct root_t *tree, struct node_t *removing) {
+    if (tree == NULL)
+        return;
+    
     struct node_t *target;
     struct node_t *aux = removing;
     char aux_color = aux->color;
+
+    if (removing == tree->nil)
+        return;
 
     if (removing->left == tree->nil) {
         target = removing->right;
@@ -228,74 +248,77 @@ void rb_delete(struct root_t *tree, struct node_t *removing) {
 
     free(removing);
 
-    if (aux_color == 0)
+    if (aux_color == PRETO)
         rb_delete_fixup(tree, target);
 }
 
 void rb_delete_fixup(struct root_t *tree, struct node_t *target) {
-    while (target != tree->root && target->color == 0) {
+    while (target != tree->root && target->color == PRETO) {
         if (target == target->parent->left) {
             struct node_t *aux = target->parent->right;
 
-            if (aux->color == 1) {
-                aux->color = 0;
-                target->parent->color = 1;
-                left_rotate(tree, target->parent);
+            if (aux->color == VERMELHO) {
+                aux->color = PRETO;
+                target->parent->color = VERMELHO;
+                rb_left_rotation(tree, target->parent);
                 aux = target->parent->right;
             }
-            if (aux->left->color == 0 && aux->right->color == 0) {
-                aux->color = 1;
+            if (aux->left->color == PRETO && aux->right->color == PRETO) {
+                aux->color = VERMELHO;
                 target = target->parent;
             } 
             else {
-                if (aux->right->color == 0) {
-                    aux->left->color = 0;
-                    aux->color = 1;
-                    right_rotate(tree, aux);
+                if (aux->right->color == PRETO) {
+                    aux->left->color = PRETO;
+                    aux->color = VERMELHO;
+                    rb_right_rotation(tree, aux);
                     aux = target->parent->right;
                 }
                 
                 aux->color = target->parent->color;
-                target->parent->color = 0;
-                aux->right->color = 0;
-                left_rotate(tree, target->parent);
+                target->parent->color = PRETO;
+                aux->right->color = PRETO;
+                rb_left_rotation(tree, target->parent);
                 target = tree->root;
             }
         } 
         else {
             struct node_t *aux = target->parent->left;
 
-            if (aux->color == 1) {
-                aux->color = 0;
-                target->parent->color = 1;
-                right_rotate(tree, target->parent);
+            if (aux->color == VERMELHO) {
+                aux->color = PRETO;
+                target->parent->color = VERMELHO;
+                rb_right_rotation(tree, target->parent);
                 aux = target->parent->left;
             }
-            if (aux->right->color == 0 && aux->left->color == 0) {
-                aux->color = 1;
+            if (aux->right->color == PRETO && aux->left->color == PRETO) {
+                aux->color = VERMELHO;
                 target = target->parent;
             } 
             else {
-                if (aux->left->color == 0) {
-                    aux->right->color = 0;
-                    aux->color = 1;
-                    left_rotate(tree, aux);
+                if (aux->left->color == PRETO) {
+                    aux->right->color = PRETO;
+                    aux->color = VERMELHO;
+                    rb_left_rotation(tree, aux);
                     aux = target->parent->left;
                 }
 
                 aux->color = target->parent->color;
-                target->parent->color = 0;
-                aux->left->color = 0;
-                right_rotate(tree, target->parent);
+                target->parent->color = PRETO;
+                aux->left->color = PRETO;
+                rb_right_rotation(tree, target->parent);
                 target = tree->root;
             }
         }
     }
 
-    target->color = 0;
+    target->color = PRETO;
 }
 
-void delete_tree(struct root_t *tree) {
+void rb_destroy(struct root_t *tree) {
+    if (tree == NULL)
+        return;
+
     while (tree->root->left != tree->nil) {
         rb_delete(tree, find_max(tree, tree->root->left));
     }
@@ -304,7 +327,9 @@ void delete_tree(struct root_t *tree) {
         rb_delete(tree, find_max(tree, tree->root->right));
     }
 
+    if (tree->root != tree->nil)
+        free(tree->root);
+    
     free(tree->nil);
-    free(tree->root);
     free(tree);
 }

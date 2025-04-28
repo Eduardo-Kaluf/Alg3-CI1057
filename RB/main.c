@@ -4,6 +4,7 @@
 
 #include "rb.h"
 
+
 int main() {
     char instruction;
     int key;

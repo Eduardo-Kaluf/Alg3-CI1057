@@ -4,15 +4,13 @@
 
 #include "rb.h"
 
-#define PRETO 0
-#define VERMELHO 1
 
-struct root_t *create_rb(int k) {
+struct root_t *create_rb(int key) {
     struct root_t *tree = malloc(sizeof(struct root_t));
     struct node_t *root = malloc(sizeof(struct node_t));
     struct node_t *nil = malloc(sizeof(struct node_t));
 
-    root->key = k;
+    root->key = key;
     root->color = PRETO;
     root->left = nil;
     root->right = nil;
@@ -30,13 +28,13 @@ struct root_t *create_rb(int k) {
     return tree;
 }
 
-struct node_t *create_rb_node(struct root_t *tree, struct node_t *parent_node, int k) {
+struct node_t *create_rb_node(struct root_t *tree, struct node_t *parent_node, int key) {
     if (tree == NULL)
         return NULL;
     
     struct node_t *node = malloc(sizeof(struct node_t));
 
-    node->key = k;
+    node->key = key;
     node->color = VERMELHO;
     node->left = tree->nil;
     node->right = tree->nil;
@@ -178,16 +176,16 @@ void rb_insert_fixup(struct root_t *tree, struct node_t *new) {
     tree->root->color = PRETO;
 }
 
-void rb_print(struct root_t *tree, struct node_t *node, int counter) {
+void rb_print(struct root_t *tree, struct node_t *node, int nivel) {
     if (tree == NULL)
         return;
 
     if (node == tree->nil)
         return;
 
-    rb_print(tree, node->left, counter + 1);
-    printf("%d,%d,%d\n", node->key, counter, node->color);
-    rb_print(tree, node->right, counter + 1);
+    rb_print(tree, node->left, nivel + 1);
+    printf("%d,%d,%d\n", node->key, nivel, node->color);
+    rb_print(tree, node->right, nivel + 1);
 }
 
 struct node_t *find_max(struct root_t *tree, struct node_t *node) {
@@ -319,13 +317,11 @@ void rb_destroy(struct root_t *tree) {
     if (tree == NULL)
         return;
 
-    while (tree->root->left != tree->nil) {
+    while (tree->root->left != tree->nil)
         rb_delete(tree, find_max(tree, tree->root->left));
-    }
     
-    while (tree->root->right != tree->nil) {
+    while (tree->root->right != tree->nil)
         rb_delete(tree, find_max(tree, tree->root->right));
-    }
 
     if (tree->root != tree->nil)
         free(tree->root);

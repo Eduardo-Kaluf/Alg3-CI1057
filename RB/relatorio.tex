@@ -1,0 +1,71 @@
+\documentclass{article}
+
+\usepackage{amsmath} 
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\SetMathAlphabet{\mathcal}{bold}{OMS}{cmsy}{b}{n}
+
+\title{Árvore Rubro-negra}
+\author{SERGIO SIVONEI DE SANT'ANA FILHO GRR20242337\\EDUARDO KALUF GRR20241770}
+\date{\today} 
+
+\begin{document}
+    \maketitle
+    
+    \section{Apresentação}
+    
+    O objetivo deste trablho é a implementação da árvore Red-Black, também conhecida como Rubro-Negra, utilizando a linguagem C, com base no livro \href{https://computerscience360.wordpress.com/wp-content/uploads/2018/02/algoritmos-teoria-e-prc3a1tica-3ed-thomas-cormen.pdf}{"Algoritmos: Teoria e Prática"} do H. Cormen
+    Esta é uma árvore binária que utiliza um campo de cor a fim de manter a árvore o mais balanceada possível, fazendo com que as operações feitas nela sejam executadas com tempo $\mathcal{O}(\log n)$
+
+    \section{Implementação}
+
+    A implementação foi feita com base nas notas de aula e no próprio livro do Cormen, com modificações a fim de cumprir as especificações do trabalho.
+    A construção da árvore foi feita do zero, sem utilizar funções de uma BST já implementada, focando em deixar o trabalho mais sucinto e didático.
+
+    A implementação foi feita com base nas notas de aula e no próprio livro do Cormen, com modificações a fim de cumprir as especificações do trabalho.
+    A construção da árvore foi feita do zero, sem utilizar funções de uma BST já implementada, focando em deixar o trabalho mais sucinto e didático.
+
+    Optamos por usar um sentinela que guarda um ponteiro para o nodo raiz e para o nodo NIL. O nodo especial NIL é utilizado para se referir a NULL, sendo então um nó preto (na Red-Black, ponteiros para NULL são tratados como nós pretos), o qual todos os nodos folhas da árvore apontam.
+
+    Sobre as funções da Rubro-Negra, todas foram implementadas segundo o livro do H. Cormen e notas de aula. Houveram modificações para atender aos critérios do trabalho, a exemplo função "rb delete", a qual ao se remover a raiz, busca o antecessor (nodo com a chave imediatamente menor que a chave da raiz) para se tornar nova raiz da árvore. No header "rb.h" constam informações mais particulares sobre cada função.
+
+    O algoritmo de busca utilizado no código é a busca binária recursiva, pois a Rubro-Negra trata-se de uma árvore binária específica. 
+
+    Os comandos aceitos são para inserção e remoção de um nodo, representados pelos caracteres "i" e "r" respectivamente, seguindo o formato "*instrução valor". 
+
+    Como presente nas espeficicações, a saída é espressada em ordem(it) na saída padrão (stdout), ordenando por valor, nível e cor, respectivamente, e em caso de valores iguais, segue ordem crescente de nível, pois chaves idênticas são inseridas à direita, portanto impressas depois seguindo a ordem (esquerda, raiz, direita).
+    % // exemplo de arvore com valores iguais //
+
+
+    \section{Diretórios e Arquivos}
+
+    \begin{itemize}
+        \item \texttt{rb.h} \\
+        Arquivo header que contém a documentação de cada função utilizada.
+        
+        \item \texttt{rb.c} \\
+        Arquivo de implementação das funções da árvore Red-Black.
+        
+        \item \texttt{main.c} \\
+        Arquivo responsável por receber os comandos passados pelo terminal e chamar as funções correspondentes, gerenciando o fluxo de dados do trabalho.
+        
+        \item \texttt{Makefile} \\
+        Arquivo simples utilizado para compilar e fazer a linkagem do trabalho.
+        \begin{itemize}
+            \item \texttt{make} \( \rightarrow \) gera o executável \texttt{myrb}
+            \item \texttt{make clean} \( \rightarrow \) remove os arquivos gerados pela compilação
+        \end{itemize}
+        
+        \item \texttt{testes} e \texttt{testes.sh} \\
+        \texttt{testes.sh} é um script simples que verifica, através dos testes e soluções armazenados no diretório \texttt{testes}, se a árvore implementada está apresentando o comportamento esperado.\\
+        O script compila automaticamente o projeto e o executa utilizando o comando \texttt{diff}. Sendo assim, caso nada seja impresso no terminal, todos os testes foram bem-sucedidos.
+    \end{itemize}
+
+        
+    \section{Conclusão}
+
+    Com todo o processo foi possível verificar a maneira como uma arvore red black pode ser implementada, ponderando sua eficiencia e praticidade de uso 
+
+\end{document} 

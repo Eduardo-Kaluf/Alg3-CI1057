@@ -1,12 +1,15 @@
 \documentclass{article}
 
+
 \usepackage{amsmath} 
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{array}
+
 
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
 \SetMathAlphabet{\mathcal}{bold}{OMS}{cmsy}{b}{n}
-
 \title{Árvore Rubro-negra}
 \author{SERGIO SIVONEI DE SANT'ANA FILHO GRR20242337\\EDUARDO KALUF GRR20241770}
 \date{\today} 
@@ -16,28 +19,44 @@
     
     \section{Apresentação}
     
-    O objetivo deste trablho é a implementação da árvore Red-Black, também conhecida como Rubro-Negra, utilizando a linguagem C, com base no livro \href{https://computerscience360.wordpress.com/wp-content/uploads/2018/02/algoritmos-teoria-e-prc3a1tica-3ed-thomas-cormen.pdf}{"Algoritmos: Teoria e Prática"} do H. Cormen
-    Esta é uma árvore binária que utiliza um campo de cor a fim de manter a árvore o mais balanceada possível, fazendo com que as operações feitas nela sejam executadas com tempo $\mathcal{O}(\log n)$
+    \parindent=10pt O objetivo deste trablho é a implementação da árvore Red-Black, também conhecida como Rubro-Negra, utilizando a linguagem C, com base no livro \href{https://computerscience360.wordpress.com/wp-content/uploads/2018/02/algoritmos-teoria-e-prc3a1tica-3ed-thomas-cormen.pdf}{"Algoritmos: Teoria e Prática"} do H. Cormen
+    \parindent=10pt Esta é uma árvore binária que utiliza um campo de cor a fim de manter a árvore o mais balanceada possível, fazendo com que as operações feitas nela sejam executadas com tempo $\mathcal{O}(\log n)$
 
     \section{Implementação}
 
-    A implementação foi feita com base nas notas de aula e no próprio livro do Cormen, com modificações a fim de cumprir as especificações do trabalho.
-    A construção da árvore foi feita do zero, sem utilizar funções de uma BST já implementada, focando em deixar o trabalho mais sucinto e didático.
+    \parindent=10pt A implementação foi feita com base nas notas de aula e no próprio livro do Cormen, com modificações a fim de cumprir as especificações do trabalho. A sua construção foi feita do zero, sem utilizar funções de uma BST já implementada, focando em deixar o trabalho mais sucinto e didático.
+    \parindent=10pt Optamos por usar um sentinela que guarda um ponteiro para o nodo raiz e para o nodo \textbf{NIL}. O nodo especial \textbf{NIL} é utilizado para se referir a \textbf{NULL}, sendo então um nó preto (na Red-Black, ponteiros para NULL são tratados como nós pretos), o qual todos os nodos folhas da árvore apontam.
 
-    A implementação foi feita com base nas notas de aula e no próprio livro do Cormen, com modificações a fim de cumprir as especificações do trabalho.
-    A construção da árvore foi feita do zero, sem utilizar funções de uma BST já implementada, focando em deixar o trabalho mais sucinto e didático.
+    \parindent=10pt Como dito anteriormente, modificações foram feitas para atender para atender aos critérios do trabalho, a exemplo função "rb delete", a qual ao se remover a raiz, busca o antecessor (nodo com a chave imediatamente menor que a chave da raiz) para se tornar nova raiz da árvore. No header "rb.h" constam informações mais particulares sobre cada função.
 
-    Optamos por usar um sentinela que guarda um ponteiro para o nodo raiz e para o nodo NIL. O nodo especial NIL é utilizado para se referir a NULL, sendo então um nó preto (na Red-Black, ponteiros para NULL são tratados como nós pretos), o qual todos os nodos folhas da árvore apontam.
+    \parindent=10pt O algoritmo de busca utilizado no código é a busca binária recursiva, pois a Rubro-Negra trata-se de uma árvore binária específica.
 
-    Sobre as funções da Rubro-Negra, todas foram implementadas segundo o livro do H. Cormen e notas de aula. Houveram modificações para atender aos critérios do trabalho, a exemplo função "rb delete", a qual ao se remover a raiz, busca o antecessor (nodo com a chave imediatamente menor que a chave da raiz) para se tornar nova raiz da árvore. No header "rb.h" constam informações mais particulares sobre cada função.
+    \parindent=10pt Os comandos aceitos são para inserção e remoção de um nodo, representados pelos caracteres "i" e "r" respectivamente, seguindo o formato "instrução valor". 
 
-    O algoritmo de busca utilizado no código é a busca binária recursiva, pois a Rubro-Negra trata-se de uma árvore binária específica. 
+    \parindent=10pt Como presente nas espeficicações, a saída é espressada em ordem(it) na saída padrão (stdout), ordenando por valor, nível e cor, respectivamente, e em caso de valores iguais, segue ordem crescente de nível, pois chaves idênticas são inseridas à direita, portanto impressas depois seguindo a ordem (esquerda, raiz, direita).
 
-    Os comandos aceitos são para inserção e remoção de um nodo, representados pelos caracteres "i" e "r" respectivamente, seguindo o formato "*instrução valor". 
 
-    Como presente nas espeficicações, a saída é espressada em ordem(it) na saída padrão (stdout), ordenando por valor, nível e cor, respectivamente, e em caso de valores iguais, segue ordem crescente de nível, pois chaves idênticas são inseridas à direita, portanto impressas depois seguindo a ordem (esquerda, raiz, direita).
-    % // exemplo de arvore com valores iguais //
-
+    \begin{center}
+        \begin{tabular}{>{\raggedleft}p{3cm} c >{\raggedright}p{3cm}}
+        \begin{tabular}[t]{@{}l@{}}
+        i 10 \\
+        i 20 \\
+        i 30 \\
+        i 20 \\
+        i 30 \\
+        \end{tabular}
+        &
+        \includegraphics[width=3cm]{redblack.png}
+        &
+        \begin{tabular}[t]{@{}l@{}}
+        10,1,0 \\
+        20,0,0 \\
+        20,2,1 \\
+        30,1,0 \\
+        30,2,1 \\
+        \end{tabular}
+        \end{tabular}
+        \end{center}
 
     \section{Diretórios e Arquivos}
 

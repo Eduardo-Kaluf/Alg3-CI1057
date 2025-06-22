@@ -3,6 +3,85 @@
 
 #include "hashtable.h"
 
+/*funcoes privadas*/
+
+void particao_mediana (struct order_node v[], int esq, int dir, int *pos_pivo){
+    int i, j;
+    struct order_node aux, pivo;
+
+    //procura a mediana entre inicio, meio e fim
+    int meio = (esq + dir) / 2;
+    struct order_node a = v[esq];
+    struct order_node b = v[meio];
+    struct order_node c = v[dir];
+    int medianaIndice; 
+    if (a.key < b.key) {
+        if (b.key < c.key) {
+            //a < b && b < c
+            medianaIndice = meio;
+        } else {
+            if (a.key < c.key) {
+                //a < c && c <= b
+                medianaIndice = dir;
+            } else {
+                //c <= a && a < b
+                medianaIndice = esq;
+            }
+        }
+    } else {
+        if (c.key < b.key) {
+            //c < b && b <= a
+            medianaIndice = meio;
+        } else {
+            if (c.key < a.key) {
+                //b <= c && c < a
+                medianaIndice = dir;
+            } else {
+                //b <= a && a <= c
+                medianaIndice = esq;
+            }
+        }
+    }
+    aux = v[medianaIndice];
+    v[medianaIndice] = v[dir];
+    v[dir] = v[medianaIndice];
+
+    pivo = v[dir];
+    i = esq;
+    j = dir;
+    while(i < j){
+        while((v[i].key <= pivo.key) && (i < dir)){
+            i++;
+    
+        }
+        while(v[j].key > pivo.key){
+            j--;
+    
+        }
+        if(i < j){
+            aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+        }
+    }
+
+    v[esq] = v[j];
+    v[j] = pivo;
+    *pos_pivo = j;
+}
+
+/* com pivo aleatorio */
+void quicksort (struct order_node v[], int esq, int dir){
+    int pos_pivo;
+
+    if(esq < dir){
+        particao_mediana(v, esq, dir, &pos_pivo);
+        quicksort(v, esq, pos_pivo - 1);
+        quicksort(v, pos_pivo + 1, dir);
+    }
+}
+
+/*funcoes publicas*/
 
 struct node *create_node(int k) {
     struct node *new_node = (struct node *) malloc(sizeof(struct node));

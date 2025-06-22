@@ -1,0 +1,5 @@
+*.o
+*.exe
+myht
+.idea/*
+.vscode/*

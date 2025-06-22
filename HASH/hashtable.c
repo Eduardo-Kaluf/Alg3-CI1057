@@ -2,8 +2,6 @@
 
 #include "hashtable.h"
 
-
-
 struct node *create_node(int k) {
     struct node *new_node = (struct node *)malloc(sizeof(struct node));
     if(!new_node){
@@ -21,8 +19,6 @@ void destroy_node(struct node *node) {
         free(node);
     }
 }
-
-
 
 struct hashtable *create_hashtable(int size){
     struct hashtable *new_hash = (struct hashtable *)malloc(sizeof(struct hashtable));
@@ -81,9 +77,23 @@ int hashing2(int key) {
 }
 
 int search_hashtable(struct hashtable *hash, int key){
-    
+    int hk1 = hashing1(key);
+    if(hash->h1[hk1] == NULL){
+        return -1;
+    } 
+    if((hash->h1[hk1]->key == key) && (hash->h1[hk1]->valid == TRUE)){
+        return hk1;
+    } else {
+        int hk2 = hashing2(key);
+        if(hash->h2[hk2]) {
+            return hk2;
+        }
+        return -1;
+    }
 }
 
 void remove_hashtable(struct hashtable *hash, int key);
 
-void print_hashtable(struct hashtable);
+void print_hashtable(struct hashtable) {
+
+}

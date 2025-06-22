@@ -1,6 +1,8 @@
 CFLAGS = -Wall -Wextra -g -std=c99
 CC = gcc
 
+all: myht
+
 # gera o executável
 myht: main.o hashtable.o
 	$(CC) -o myht main.o hashtable.o
@@ -15,3 +17,4 @@ main.o: main.c hashtable.h
 
 clean:
 	rm -f *.o *~ myht
+

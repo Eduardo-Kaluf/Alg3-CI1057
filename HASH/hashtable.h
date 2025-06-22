@@ -17,6 +17,12 @@ struct hashtable {
     struct node **h2; //vector of second hashtable
 };
 
+struct order_node {
+    int key;
+    char table[3];
+    int index;
+};
+
 struct node *create_node(int k);
 
 void destroy_node(struct node *node);

@@ -1,20 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "hashtable.h"
 
+
 /*funcoes privadas*/
-
 void particao_mediana (struct order_node v[], int esq, int dir, int *pos_pivo){
-    int i, j;
-    struct order_node aux, pivo;
 
-    //procura a mediana entre inicio, meio e fim
+    //procura a mediana entre início, meio e fim
+    int medianaIndice;
     int meio = (esq + dir) / 2;
     struct order_node a = v[esq];
     struct order_node b = v[meio];
     struct order_node c = v[dir];
-    int medianaIndice; 
+
     if (a.key < b.key) {
         if (b.key < c.key) {
             //a < b && b < c
@@ -42,21 +42,21 @@ void particao_mediana (struct order_node v[], int esq, int dir, int *pos_pivo){
             }
         }
     }
-    aux = v[medianaIndice];
+    struct order_node aux = v[medianaIndice];
     v[medianaIndice] = v[dir];
     v[dir] = v[medianaIndice];
 
-    pivo = v[dir];
-    i = esq;
-    j = dir;
-    while(i < j){
+    struct order_node pivo = v[dir];
+    int i = esq;
+    int j = dir;
+    while(i < j) {
         while((v[i].key <= pivo.key) && (i < dir)){
             i++;
-    
+
         }
         while(v[j].key > pivo.key){
             j--;
-    
+
         }
         if(i < j){
             aux = v[i];
@@ -71,10 +71,10 @@ void particao_mediana (struct order_node v[], int esq, int dir, int *pos_pivo){
 }
 
 /* com pivo aleatorio */
-void quicksort (struct order_node v[], int esq, int dir){
+void quicksort(struct order_node v[], int esq, int dir) {
     int pos_pivo;
 
-    if(esq < dir){
+    if(esq < dir) {
         particao_mediana(v, esq, dir, &pos_pivo);
         quicksort(v, esq, pos_pivo - 1);
         quicksort(v, pos_pivo + 1, dir);
@@ -82,7 +82,6 @@ void quicksort (struct order_node v[], int esq, int dir){
 }
 
 /*funcoes publicas*/
-
 struct node *create_node(int k) {
     struct node *new_node = (struct node *) malloc(sizeof(struct node));
 
@@ -154,24 +153,24 @@ int hashing1(int key) {
 }
 
 int hashing2(int key) {
-    return (int)(SIZE * (key * 0.9 - (int)(key * 0.9)));
+    return (int) (SIZE * (key * 0.9 - (int)(key * 0.9)));
 }
 
-int search_hashtable(struct hashtable *hash, int key){
-
+int search_hashtable(struct hashtable *hash, int key) {
     int hk1 = hashing1(key);
-    if(hash->h1[hk1] == NULL){
+
+    if(hash->h1[hk1] == NULL)
         return -1;
-    }
-    if((hash->h1[hk1]->key == key) && (hash->h1[hk1]->valid == TRUE)){
+
+    if((hash->h1[hk1]->key == key) && (hash->h1[hk1]->valid == TRUE))
         return hk1;
-    } else {
-        int hk2 = hashing2(key);
-        if(hash->h2[hk2]) {
-            return hk2;
-        }
-        return -1;
-    }
+
+    int hk2 = hashing2(key);
+
+    if(hash->h2[hk2])
+        return hk2;
+
+    return -1;
 }
 
 void remove_hashtable(struct hashtable *hash, int key) {
@@ -185,13 +184,27 @@ void remove_hashtable(struct hashtable *hash, int key) {
 }
 
 void print_hashtable(struct hashtable *hash) {
-
     struct order_node sorted_array[22];
+    int n = 0;
 
     for (int i = 0; i < hash->size; i++) {
-        sorted_array[i].key = -1;
-        sorted_array[i].key = -1;
-        sorted_array[i].key = -1;
+        if (hash->h1[i] != NULL && hash->h1[i]->valid) {
+            sorted_array[i].key = hash->h1[i]->key;
+            strcpy(sorted_array[i].table, "T1");
+            sorted_array[i].key = i;
+            n += 1;
+        }
+
+        if (hash->h2[i] != NULL) {
+            sorted_array[i].key = hash->h2[i]->key;
+            strcpy(sorted_array[i].table, "T2");
+            sorted_array[i].key = i;
+            n+=1;
+        }
     }
 
+    quicksort(sorted_array, 0, n);
+
+    for (int i = 0; i < n; i++)
+        printf("%d,%s,%d\n", sorted_array[i].key, sorted_array[i].table, sorted_array[i].index);
 }

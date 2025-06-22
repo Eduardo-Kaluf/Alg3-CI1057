@@ -3,6 +3,8 @@
 
 
 #define SIZE 11
+#define TRUE 1 
+#define FALSE 0
 
 struct node {
     char valid;
@@ -19,6 +21,10 @@ struct node *create_node(int k);
 
 void destroy_node(struct node *node);
 
+struct hashtable *create_hashtable(int size);
+
+void destroy_hashtable(struct hashtable *hash);
+
 void insert_hashtable(struct hashtable *hash, int key);
 
 int hashing1(int key);
@@ -30,7 +36,6 @@ int search_hashtable(struct hashtable *hash, int key);
 void remove_hashtable(struct hashtable *hash, int key);
 
 void print_hashtable(struct hashtable);
-
 
 
 

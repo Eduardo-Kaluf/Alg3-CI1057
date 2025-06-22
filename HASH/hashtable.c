@@ -4,77 +4,50 @@
 
 #include "hashtable.h"
 
+#include <stdio.h>
 
-/*funcoes privadas*/
-void particao_mediana (struct order_node v[], int esq, int dir, int *pos_pivo){
-
-    //procura a mediana entre início, meio e fim
-    int medianaIndice;
+void particao_mediana(struct order_node v[],
+                             int        esq,
+                             int        dir,
+                             int       *pos_pivo)
+{
     int meio = (esq + dir) / 2;
-    struct order_node a = v[esq];
-    struct order_node b = v[meio];
-    struct order_node c = v[dir];
 
-    if (a.key < b.key) {
-        if (b.key < c.key) {
-            //a < b && b < c
-            medianaIndice = meio;
-        } else {
-            if (a.key < c.key) {
-                //a < c && c <= b
-                medianaIndice = dir;
-            } else {
-                //c <= a && a < b
-                medianaIndice = esq;
-            }
-        }
-    } else {
-        if (c.key < b.key) {
-            //c < b && b <= a
-            medianaIndice = meio;
-        } else {
-            if (c.key < a.key) {
-                //b <= c && c < a
-                medianaIndice = dir;
-            } else {
-                //b <= a && a <= c
-                medianaIndice = esq;
-            }
-        }
-    }
-    struct order_node aux = v[medianaIndice];
-    v[medianaIndice] = v[dir];
-    v[dir] = v[medianaIndice];
+    int mediana = esq;        
 
-    struct order_node pivo = v[dir];
+    if ((v[esq].key <= v[meio].key && v[meio].key <= v[dir].key) ||
+        (v[dir].key <= v[meio].key && v[meio].key <= v[esq].key))
+        mediana = meio;
+    else if ((v[esq].key <= v[dir].key && v[dir].key <= v[meio].key) ||
+             (v[meio].key <= v[dir].key && v[dir].key <= v[esq].key))
+        mediana = dir;
+
+    struct order_node aux        = v[mediana];
+    v[mediana]            = v[dir];
+    v[dir]                = aux;
+    struct order_node pivot = v[dir];
+
     int i = esq;
-    int j = dir;
-    while(i < j) {
-        while((v[i].key <= pivo.key) && (i < dir)){
-            i++;
-
-        }
-        while(v[j].key > pivo.key){
-            j--;
-
-        }
-        if(i < j){
-            aux = v[i];
-            v[i] = v[j];
-            v[j] = aux;
+    for (int j = esq; j < dir; ++j) {
+        if (v[j].key <= pivot.key) {
+            aux   = v[i];
+            v[i]  = v[j];
+            v[j]  = aux;
+            ++i;
         }
     }
 
-    v[esq] = v[j];
-    v[j] = pivo;
-    *pos_pivo = j;
+    aux   = v[i];
+    v[i]  = v[dir];
+    v[dir]= aux;
+
+    *pos_pivo = i;
 }
 
-/* com pivo aleatorio */
-void quicksort(struct order_node v[], int esq, int dir) {
-    int pos_pivo;
-
-    if(esq < dir) {
+void quicksort(struct order_node v[], int esq, int dir)
+{
+    if (esq < dir) {
+        int pos_pivo;
         particao_mediana(v, esq, dir, &pos_pivo);
         quicksort(v, esq, pos_pivo - 1);
         quicksort(v, pos_pivo + 1, dir);
@@ -130,6 +103,8 @@ void destroy_hashtable(struct hashtable *hash) {
                 destroy_node(hash->h2[i]);
         }
 
+        free(hash->h1);
+        free(hash->h2);
         free(hash);
     }
 }
@@ -155,7 +130,7 @@ int hashing1(int key) {
 }
 
 int hashing2(int key) {
-    return (int) (SIZE * (key * 0.9 - (int)(key * 0.9)));
+    return (int)(SIZE * (key * 0.9 - (int)(key * 0.9)));
 }
 
 int search_hashtable(struct hashtable *hash, int key) {
@@ -208,7 +183,7 @@ void print_hashtable(struct hashtable *hash) {
         }
     }
 
-    //quicksort(sorted_array, 0, n - 1);
+    quicksort(sorted_array, 0, n - 1);
 
     for (int i = 0; i < n; i++)
         printf("%d,%s,%d\n", sorted_array[i].key, sorted_array[i].table, sorted_array[i].index);

@@ -115,7 +115,4 @@ void print_hashtable(struct hashtable *hash) {
         sorted_array[i].key = -1;
     }
 
-
-
-
 }

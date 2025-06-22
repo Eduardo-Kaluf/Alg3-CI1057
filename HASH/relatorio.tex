@@ -1,5 +1,4 @@
-\documentclass{article}  % Options: 10pt, 11pt, 12pt
-
+\documentclass{article}
 
 \usepackage{amsmath} 
 \usepackage{hyperref}
@@ -9,64 +8,62 @@
 \usepackage{indentfirst}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
 \SetMathAlphabet{\mathcal}{bold}{OMS}{cmsy}{b}{n}
-\title{Árvore Rubro-Negra}
+\title{Hash Table}
 \author{SERGIO SIVONEI DE SANT'ANA FILHO GRR20242337\\EDUARDO KALUF GRR20241770}
 \date{\today} 
 \begin{document}
     \maketitle
     
-    \section{Apresentação}
-    
-    \setlength{\parindent}{15pt}
+    \section{Apresentação}\label{sec:apresentacao}
 
-    O objetivo deste trablho é a implementação da árvore Red-Black, também conhecida como Rubro-Negra, utilizando a linguagem C, com base no livro \href{https://computerscience360.wordpress.com/wp-content/uploads/2018/02/algoritmos-teoria-e-prc3a1tica-3ed-thomas-cormen.pdf}{"Algoritmos: Teoria e Prática"} do H. Cormen.
-    Esta é uma árvore binária que utiliza um campo de cor a fim de manter a árvore o mais balanceada possível, fazendo com que as operações feitas nela sejam executadas com tempo $\mathcal{O}(\log n)$
+        \setlength{\parindent}{15pt}
 
-    \section{Implementação}
+        O objetivo deste trabalho é implementar a inclusão e exclusão de valores em uma tabela hash de endereçamento aberto.
+        Teremos duas tabelas hash de tamanhos iguais (11) e duas funções hash, a primeira será $h_1(k) = k \bmod m$ e a segunda é $h_2(k) = \left\lfloor m \cdot (k \cdot 0.9 - \lfloor k \cdot 0.9 \rfloor) \right\rfloor$.
 
-    A implementação foi feita com base nas notas de aula e no próprio livro do Cormen, com modificações a fim de cumprir as especificações do trabalho. A sua construção foi feita do zero, sem utilizar funções de uma BST já implementada, focando em deixar o trabalho mais sucinto e didático.
+        Nós trataremos colisão movendo as chaves entre as duas tabelas.
+        Basicamente simularemos o algoritmo Cuckoo Hash, porém sem nos preocuparmos com rehashing.
 
-    Optamos por usar um sentinela que guarda um ponteiro para o nodo raiz e para o nodo \textbf{NIL}. O nodo especial \textbf{NIL} é utilizado para se referir a \textbf{NULL}, sendo então, um nó preto (na Red-Black, ponteiros para \textbf{NULL} são tratados como nós pretos), o qual todos os nodos folhas da árvore apontam.
+    \section{Implementação}\label{sec:implementacao}
 
-    Como dito anteriormente, modificações foram feitas para atender aos critérios do trabalho, a função "rb delete", por exemplo, quando deleta a raiz, busca o antecessor (nodo com a chave imediatamente menor que a chave da raiz) para se tornar nova raiz da árvore. No header "rb.h" constam informações mais particulares sobre cada função implementada.
+        \subsection{Inclusão}\label{subsec:inclusao}
 
-    O algoritmo de busca utilizado no código é a busca binária recursiva, pois a Rubro-Negra se trata de uma árvore binária específica.
+            A inclusão sempre será em T1, caso a posição calculada pela função hash estiver vazia ou marcada como \("\)excluída\("\), iremos inserir a chave k.
 
-    Os comandos aceitos são de inserção e de remoção, representados pelos caracteres "i" e "r" respectivamente, seguindo o formato "instrução valor". 
-    \enlargethispage{2\baselineskip}
+            Caso exista colisão em T1 devemos realizar outras duas operações:
 
-    Como dito nas espeficicações, a saída é espressada em \textit{ordem} na \textit{stdout}, ordenando por valor, nível e cor, respectivamente. Em caso de valores repetidos, segue ordem crescente de nível, pois chaves idênticas são inseridas à direita, portanto impressas depois, seguindo sempre \textbf{Esquerda \( \rightarrow \) Raiz \( \rightarrow \) Direita}.
+            \begin{itemize}
+                \item Copiaremos a chave que está em T1 para T2. Incluindo-a em T2 usando h2(\("\)chave\_antiga\("\)).
+                \item Incluiremos a nova chave em T1 na posição h1(\("\)chave\_nova\("\)).
+            \end{itemize}
 
-    \begin{center}
-        \begin{tabular}{>{\raggedleft}p{3cm} c >{\raggedright}p{3cm}}
-        \begin{tabular}[t]{@{}l@{}}
-        i 10 \\
-        i 20 \\
-        i 30 \\
-        i 20 \\
-        i 30 \\
-        \end{tabular}
-        &
-        \includegraphics[width=4cm]{redblack.png}
-        &
-        \begin{tabular}[t]{@{}l@{}}
-        10,1,0 \\
-        20,0,0 \\
-        20,2,1 \\
-        30,1,0 \\
-        30,2,1 \\
-        \end{tabular}
-        \end{tabular}
-        \end{center}
+            A estrutura irá ignorar chaves duplicadas, neste caso simplesmente mantemos a primeira chave inserida.
 
-    \section{Diretórios e Arquivos}
+        \subsection{Busca}\label{subsec:busca}
+
+            Se a posição da chave k calculada por h1(k) estiver vazia, iremos retornar null, ou seja, a chave não existe.
+
+            Se a chave k existe em T1, retornaremos a posição dela em T1 calculada por h1(k).
+            Caso contrário, a chave k existe em T2 e retornaremos a posição dela em T2 com h2(k).
+
+        \subsection{Exclusão}\label{subsec:exclusao}
+
+            Podemos neste trabalho excluir qualquer chave de qualquer tabela.
+            Considere nesta exemplicação que a chave a ser excluída k existe em T1 ou T2.
+
+            Se a chave a ser excluida estiver na posição calculada por h2(k) em T2, então apenas excluimos a chave de T2.
+
+            Caso a chave esteja em T1 na posição calculada por h1(k), marcaremos a posição como \("\)excluida\("\), para que
+            ainda existam meios de acessar as chaves de T2 com a busca, em seguida podemos excluir com segurança a chave k.
+
+    \section{Diretórios e Arquivos}\label{sec:diretorios-e-arquivos}
 
     \begin{itemize}
-        \item \texttt{rb.h} \\
+        \item \texttt{hashtable.h} \\
         Arquivo header que contém a documentação de cada função utilizada.
         
-        \item \texttt{rb.c} \\
-        Arquivo de implementação das funções da árvore Red-Black.
+        \item \texttt{hashtable.c} \\
+        Arquivo de implementação das funções da HashTable.
         
         \item \texttt{main.c} \\
         Arquivo responsável por receber os comandos passados pelo terminal e chamar as funções correspondentes, gerenciando o fluxo de dados do trabalho.
@@ -74,18 +71,21 @@
         \item \texttt{Makefile} \\
         Arquivo simples utilizado para compilar e fazer a linkagem do trabalho.
         \begin{itemize}
-            \item \texttt{make} \( \rightarrow \) gera o executável \texttt{myrb}
+            \item \texttt{make} \( \rightarrow \) gera o executável \texttt{myht}
             \item \texttt{make clean} \( \rightarrow \) remove os arquivos gerados pela compilação
         \end{itemize}
         
         \item \texttt{testes} e \texttt{testes.sh} \\
-        \texttt{testes.sh} é um script simples que verifica, através dos testes e soluções armazenados no diretório \texttt{testes}, se a árvore implementada está apresentando o comportamento esperado.\\
-        O script compila automaticamente o projeto e o executa utilizando o comando \texttt{diff}. Sendo assim, caso nada seja impresso no terminal, todos os testes foram bem-sucedidos.
+        \texttt{testes.sh} é um script simples que verifica, através dos testes e soluções armazenados no diretório \texttt{testes}, se a HashTable implementada está apresentando o comportamento esperado.\\
+        O script compila automaticamente o projeto e o executa utilizando o comando \texttt{diff}.
+
+        Sendo assim, caso nada seja impresso no terminal, todos os testes foram bem-sucedidos.
     \end{itemize}
 
-        
-    \section{Conclusão}
+    \section{Conclusão}\label{sec:conclusao}
 
-    Ao longo deste trabalho, foi possível compreender de forma mais aprofundada como uma árvore Red-Black pode ser implementada, analisando sua estrutura, funcionamento e as vantagens que oferece. Foi possível ver que esse tipo de árvore proporciona uma eficiência ótima nas operações de inserção, remoção e busca. Além disso, sua praticidade de uso em diversas aplicações, como no própio sistema de gerenciamento de arquivos do linux, reforça sua importância como estrutura de dados.
+    Ao longo deste estudo, aprofundamos nosso entendimento sobre a implementação e o funcionamento da HashTable.
+    Ficou evidente que sua principal vantagem reside na excepcional eficiência com que executa as operações de inserção, remoção e busca de elementos.
+    A versatilidade de sua aplicação, que vai desde a otimização de consultas em bancos de dados até o gerenciamento seguro de senhas, reforça ainda mais o valor desta estrutura de dados.
 
 \end{document} 

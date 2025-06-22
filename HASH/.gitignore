@@ -3,3 +3,7 @@
 myht
 .idea/*
 .vscode/*
+relatorio.out
+relatorio.aux
+relatorio.log
+texput.log

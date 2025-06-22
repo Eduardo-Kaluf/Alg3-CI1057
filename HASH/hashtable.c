@@ -43,17 +43,46 @@ struct hashtable *create_hashtable(int size){
 
 }
 
-void destroy_hashtable(struct hashtable *hash);
-
-void insert_hashtable(struct hashtable *hash, int key) {
-
+void destroy_hashtable(struct hashtable *hash) {
+    if(hash){
+        for(int i = 0; i < hash->size; i++){
+            if(hash->h1[i]){
+                destroy_node(hash->h1[i]);
+            }
+            if(hash->h2[i]){
+                destroy_node(hash->h2[i]);
+            }
+        }
+        free(hash);
+    }
 }
 
-int hashing1(int key);
+void insert_hashtable(struct hashtable *hash, int key) {
+    int hk1 = hashing1(key);
 
-int hashing2(int key);
+    if(hash->h1[hk1] == NULL){
+        hash->h1[hk1] = create_node(key);
+    } else if(hash->h1[hk1]->valid == FALSE){
+        hash->h1[hk1]->key = key;
+        hash->h1[hk1]->valid = TRUE;
+    } else if(key != hash->h1[hk1]->key){
+        int hk2 = hashing2(hash->h1[hk1]->key);
+        hash->h2[hk2] = create_node(hash->h1[hk1]->key);
+        hash->h1[hk1]->key = key;
+    }
+}
 
-int search_hashtable(struct hashtable *hash, int key);
+int hashing1(int key) {
+    return key % SIZE;
+}
+
+int hashing2(int key) {
+    return (int)(SIZE * (key * 0.9 - (int)(key * 0.9)));
+}
+
+int search_hashtable(struct hashtable *hash, int key){
+    
+}
 
 void remove_hashtable(struct hashtable *hash, int key);
 

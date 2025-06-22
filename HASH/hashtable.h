@@ -42,7 +42,7 @@ int search_hashtable(struct hashtable *hash, int key);
 
 void remove_hashtable(struct hashtable *hash, int key);
 
-void print_hashtable(struct hashtable);
+void print_hashtable(struct hashtable * hash);
 
 
 #endif

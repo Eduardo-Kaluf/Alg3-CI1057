@@ -7,25 +7,25 @@ int main() {
     char instruction;
     int key;
 	
-    struct hashtable *hashtable = create_hashtable();
+    struct hashtable *hashtable = create_hashtable(SIZE);
 	
     while (scanf("%c", &instruction) != EOF) {
         scanf("%d", &key);
 	
         if (instruction == 'i') {
-	
+            insert_hashtable(hashtable, key);
         }
         else if (instruction == 'r') {
-	
+            remove_hashtable(hashtable, key);
         }
 	
         getchar();
     }
 	
     if (hashtable != NULL) {
-        hashtable_print();
+        print_hashtable(hashtable);
 	
-        hashtable_destroy();
+        destroy_hashtable(hashtable);
     }
 	
 

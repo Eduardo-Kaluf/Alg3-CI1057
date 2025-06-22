@@ -5,8 +5,8 @@
 
 
 struct node *create_node(int k) {
-    struct node *new_node;
-    if(!(new_node = (struct node *)malloc(sizeof(struct node)))){
+    struct node *new_node = (struct node *)malloc(sizeof(struct node));
+    if(!new_node){
         return NULL;
     }
 
@@ -22,7 +22,32 @@ void destroy_node(struct node *node) {
     }
 }
 
-void insert_hashtable(struct hashtable *hash, int key);
+
+
+struct hashtable *create_hashtable(int size){
+    struct hashtable *new_hash = (struct hashtable *)malloc(sizeof(struct hashtable));
+    if(!new_hash){
+        return NULL;
+    }
+    new_hash->size = size;
+
+    new_hash->h1 = (struct node **)calloc(size, sizeof(struct node *));
+    new_hash->h2 = (struct node **)calloc(size, sizeof(struct node *));
+
+    for(int i = 0; i < size; i++){
+        new_hash->h1[i] = NULL;
+        new_hash->h2[i] = NULL;
+    }
+
+    return new_hash;
+
+}
+
+void destroy_hashtable(struct hashtable *hash);
+
+void insert_hashtable(struct hashtable *hash, int key) {
+
+}
 
 int hashing1(int key);
 

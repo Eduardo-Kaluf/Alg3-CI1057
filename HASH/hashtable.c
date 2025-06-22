@@ -95,8 +95,10 @@ struct node *create_node(int k) {
 }
 
 void destroy_node(struct node *node) {
-    if (node)
+    if (node){
         free(node);
+    }
+
 }
 
 struct hashtable *create_hashtable(int size){
@@ -174,12 +176,15 @@ int search_hashtable(struct hashtable *hash, int key) {
 }
 
 void remove_hashtable(struct hashtable *hash, int key) {
+    int hk1 = hashing1(key);
+    int hk2 = hashing2(key);
 
-    if (hash->h2[hashing2(key)] != NULL)
-        destroy_node(hash->h2[hashing2(key)]);
-    else if (hash->h1[hashing1(key)] != NULL) {
-        hash->h1[hashing1(key)]->key = -1;
-        hash->h1[hashing1(key)]->key = FALSE;
+    if ((hash->h2[hk2] != NULL) && (hash->h2[hk2]->key == key)){
+        destroy_node(hash->h2[hk2]);
+        hash->h2[hk2] = NULL;
+    } else if ((hash->h1[hk1] != NULL) && (hash->h1[hk1]->key == key)) {
+        hash->h1[hk1]->key = -1;
+        hash->h1[hk1]->valid = FALSE;
     }
 }
 
@@ -189,21 +194,21 @@ void print_hashtable(struct hashtable *hash) {
 
     for (int i = 0; i < hash->size; i++) {
         if (hash->h1[i] != NULL && hash->h1[i]->valid) {
-            sorted_array[i].key = hash->h1[i]->key;
-            strcpy(sorted_array[i].table, "T1");
-            sorted_array[i].key = i;
+            sorted_array[n].key = hash->h1[i]->key;
+            strcpy(sorted_array[n].table, "T1");
+            sorted_array[n].index = i;
             n += 1;
         }
 
         if (hash->h2[i] != NULL) {
-            sorted_array[i].key = hash->h2[i]->key;
-            strcpy(sorted_array[i].table, "T2");
-            sorted_array[i].key = i;
-            n+=1;
+            sorted_array[n].key = hash->h2[i]->key;
+            strcpy(sorted_array[n].table, "T2");
+            sorted_array[n].index = i;
+            n += 1;
         }
     }
 
-    quicksort(sorted_array, 0, n);
+    //quicksort(sorted_array, 0, n - 1);
 
     for (int i = 0; i < n; i++)
         printf("%d,%s,%d\n", sorted_array[i].key, sorted_array[i].table, sorted_array[i].index);

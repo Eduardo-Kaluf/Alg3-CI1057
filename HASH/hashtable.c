@@ -32,7 +32,7 @@ struct hashtable *create_hashtable(int size){
     new_hash->h1 = (struct node **)calloc(size, sizeof(struct node *));
     new_hash->h2 = (struct node **)calloc(size, sizeof(struct node *));
 
-    for (int i = 0; i < size; i++){
+    for (int i = 0; i < size; i++) {
         new_hash->h1[i] = NULL;
         new_hash->h2[i] = NULL;
     }
@@ -80,6 +80,19 @@ int hashing2(int key) {
 
 int search_hashtable(struct hashtable *hash, int key){
 
+    int hk1 = hashing1(key);
+    if(hash->h1[hk1] == NULL){
+        return -1;
+    }
+    if((hash->h1[hk1]->key == key) && (hash->h1[hk1]->valid == TRUE)){
+        return hk1;
+    } else {
+        int hk2 = hashing2(key);
+        if(hash->h2[hk2]) {
+            return hk2;
+        }
+        return -1;
+    }
 }
 
 void remove_hashtable(struct hashtable *hash, int key) {

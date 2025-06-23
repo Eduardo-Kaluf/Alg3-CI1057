@@ -4,13 +4,8 @@
 
 #include "hashtable.h"
 
-#include <stdio.h>
 
-void particao_mediana(struct order_node v[],
-                             int        esq,
-                             int        dir,
-                             int       *pos_pivo)
-{
+void particao_mediana(struct order_node v[], int esq, int dir, int *pos_pivo) {
     int meio = (esq + dir) / 2;
 
     int mediana = esq;        
